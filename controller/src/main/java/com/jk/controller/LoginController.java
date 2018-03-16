@@ -229,6 +229,14 @@ public class LoginController {
     }
 
 
+    @GetMapping("github")
+    @ResponseBody
+    public String github()
+    {
+        return "github";
+    }
+
+
 
 
 
