@@ -236,6 +236,13 @@ public class LoginController {
         return "github";
     }
 
+    @GetMapping("githubTwo")
+    @ResponseBody
+    public String githubTwo()
+    {
+        return "githubTwo";
+    }
+
 
 
 
