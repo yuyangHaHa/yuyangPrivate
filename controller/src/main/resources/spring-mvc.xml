@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context.xsd
+            http://www.springframework.org/schema/mvc
+            http://www.springframework.org/schema/mvc/spring-mvc.xsd"
+       default-autowire="byName">
+
+    <!-- 开启注解模式，扫描com.jk.controller包下的所有子包中的所有类，
+    凡是包含@Controller注解的类都会生成控制层实例 -->
+    <context:component-scan base-package="com.jk.controller"></context:component-scan>
+    <!--注解模式-->
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+          depends-on="lifecycleBeanPostProcessor" />
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager" />
+    </bean>
+    <!--异常处理-->
+    <!-- 开启异常处理解析器,会直接跳到视图解析器！！ -->
+    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <property name="exceptionMappings">
+            <props>
+                <prop key="org.apache.shiro.authz.UnauthorizedException">403</prop>
+                <prop key="org.apache.shiro.authz.UnauthenticatedException">/index/login</prop>
+            </props>
+        </property>
+    </bean>
+
+    <mvc:annotation-driven/>
+
+
+
+
+    <!--
+        jsp视图解析器，对模型视图名称的解析，即在模型视图名称添加前后缀
+            如/view/welcome.jsp对应的视图名就是：welcome
+            这个类在视图解析器链中一定要定义在其他视图的后面，因为它始终会返回一个视图
+    -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <!-- 返回值的前缀 -->
+        <property name="prefix" value="/templates/"/>
+        <!-- 返回值的后缀 -->
+        <property name="suffix" value=".jsp"/>
+        <property name="order" value="1"/>
+    </bean>
+    <!-- freemarker视图解析器 -->
+    <!--<bean id="FreeMarkerConfigurer" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+    <property name="templateLoaderPath" value="/templates/"/>
+    <property name="defaultEncoding" value="UTF-8"/>
+    </bean>-->
+    <bean id="FreeMarkerConfigurer" class="com.jk.util.ShiroTagFreeMarkerConfigurer">
+        <property name="templateLoaderPath" value="/templates/"/>
+        <property name="defaultEncoding" value="UTF-8"/>
+    </bean>
+    <bean id="FreeMarkerViewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+        <property name="suffix" value=".ftl"/>
+        <property name="contentType" value="text/html;charset=UTF-8"/>
+        <property name="requestContextAttribute" value="request" />
+        <property name="order" value="0"/>
+    </bean>
+
+
+
+    <!--上文件上传解析-->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!--文件的最大上传大小:单位（byte：字节）-->
+        <property name="maxUploadSize" value="20480000"/>
+        <property name="defaultEncoding" value="utf-8"/>
+    </bean>
+
+
+    <!-- 静态资源过滤 -->
+    <mvc:resources mapping="/static/**" location="/static/" />
+    <!-- 配置拦截器 -->
+    <!-- <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/*"/>
+            <mvc:mapping path="/*/*"/>
+            <mvc:exclude-mapping path="/login"/>
+            <mvc:exclude-mapping path="/toLoginPage"/>
+            <bean class="com.jk.interceptor.LoginInterceptor"></bean>
+        </mvc:interceptor>
+    </mvc:interceptors> -->
+
+
+    <!--ლ(~•̀︿•́~)つ︻̷┻̿═━一加油啊！狗酱！-->
+    <!--┗|｀O′|┛ 嗷~~ 加油做啊！-->
+    <!--o(*≧▽≦)ツ┏━┓2-18号终于做完了！！-->
+
+
+</beans>

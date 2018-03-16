@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >  
+<mapper namespace="com.jk.mapper.LoginMapper">
+
+	<!-- 标签总结
+		增：insert
+		删：delete
+		改：update
+		查：select
+	 -->
+	
+	<!-- 属性总结 
+		id：与mapper中的方法名保持一致
+		parameterType：接收mapper传过来的参数类型（可缺省）
+		resultType：返回给mapper的结果类型（必须的，不可缺省）
+	-->
+	
+	<!-- 取值方式
+		${}：不安全，有sql注入风险，取出的数据都是源数据
+		#{}：安全，无sql注入风险，取出的数据都是字符串
+	 -->
+
+	<select id="doLogin" resultType="com.jk.entity.User" parameterType="java.lang.String">
+          SELECT * FROM `user` WHERE email = #{email}
+	</select>
+
+	<select id="zhiDing" resultType="com.jk.entity.Post">
+		SELECT
+        ps.*,ue.id as 'user.id',ue.avatar as 'user.avatar',ue.nickname as 'user.nickname',ct.`name` as 'category.name'
+        FROM  `post` ps,`user` ue,category as ct
+        WHERE ps.user_id = ue.id AND ps.category_id = ct.id AND ps.level  =  3  AND  ps.status  >=  0
+        <if test=" category_id!=null and category_id!='' ">
+			AND ps.category_id = #{category_id}
+		</if>
+        ORDER BY ps.created desc
+	</select>
+
+	<select id="getAll" resultType="com.jk.entity.Post" parameterType="java.lang.Integer">
+		SELECT
+		ps.*,ue.id as 'user.id',ue.avatar as 'user.avatar',ue.nickname as 'user.nickname',ct.`name` as 'category.name'
+		FROM  `post` ps,`user` ue,category as ct
+		WHERE ps.user_id = ue.id AND ps.category_id = ct.id
+		<if test=" status!=null ">
+			AND ps.status = #{status}
+		</if>
+		<if test=" recommend!=null ">
+			AND ps.recommend = #{recommend}
+		</if>
+		<if test=" category_id!=null and category_id!='' ">
+			AND ps.category_id = #{category_id}
+		</if>
+		ORDER BY ps.created desc
+	</select>
+
+
+
+
+
+	<insert id="insertUser" parameterType="com.jk.entity.User" >
+		insert into user (id, nickname, password,
+		salt, role, email,
+		email_status, mobile, mobile_status,
+		point, title, gender,
+		signature, post_count, comment_count,
+		wechat, weibo, birthday,
+		company, address, site,
+		avatar, status, created,
+		create_source, modified, logged,
+		activated, auth_info)
+		values (#{id,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
+		#{salt,jdbcType=VARCHAR}, #{role,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR},
+		#{email_status,jdbcType=TINYINT}, #{mobile,jdbcType=VARCHAR}, #{mobile_status,jdbcType=TINYINT},
+		#{point,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{gender,jdbcType=VARCHAR},
+		#{signature,jdbcType=VARCHAR}, #{post_count,jdbcType=INTEGER}, #{comment_count,jdbcType=INTEGER},
+		#{wechat,jdbcType=VARCHAR}, #{weibo,jdbcType=VARCHAR}, #{birthday,jdbcType=TIMESTAMP},
+		#{company,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{site,jdbcType=VARCHAR},
+		#{avatar,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, #{created,jdbcType=TIMESTAMP},
+		#{create_source,jdbcType=VARCHAR}, #{modified,jdbcType=TIMESTAMP}, #{logged,jdbcType=TIMESTAMP},
+		#{activated,jdbcType=TIMESTAMP}, #{auth_info,jdbcType=LONGVARCHAR})
+	</insert>
+
+
+
+	<select id="tiziXq" resultType="com.jk.entity.Post" parameterType="java.lang.String">
+		SELECT
+		ps.*,ue.id as 'user.id',ue.avatar as 'user.avatar',ue.nickname as 'user.nickname',ct.name as 'category.name',ct.id as 'category.id'
+		FROM  `post` ps,`user` ue,category as ct
+		WHERE ps.user_id = ue.id AND ps.category_id = ct.id
+		AND ps.id = #{postid}
+	</select>
+
+
+	<select id="listComment" resultType="com.jk.entity.Comment" parameterType="java.lang.String">
+		SELECT cm.*,us.nickname as 'nickname',us.avatar as 'avatar'
+		FROM comment cm left JOIN user us on cm.user_id = us.id Where cm.post_id = #{postid}
+		ORDER BY cm.created DESC
+	</select>
+
+	<insert id="insertHuiFu" parameterType="com.jk.entity.Comment" >
+		insert into comment (id, parent_id, post_id,
+		user_id, user_ip, vote_up,
+		vote_down, level, status,
+		created, modified, content,
+		user_agent)
+		values (#{id,jdbcType=VARCHAR}, #{parent_id,jdbcType=VARCHAR}, #{post_id,jdbcType=VARCHAR},
+		#{user_id,jdbcType=VARCHAR}, #{user_ip,jdbcType=VARCHAR}, #{vote_up,jdbcType=INTEGER},
+		#{vote_down,jdbcType=INTEGER}, #{level,jdbcType=TINYINT}, #{status,jdbcType=TINYINT},
+		#{created,jdbcType=TIMESTAMP}, #{modified,jdbcType=TIMESTAMP}, #{content,jdbcType=LONGVARCHAR},
+		#{user_agent,jdbcType=LONGVARCHAR})
+	</insert>
+
+
+
+	<update id="updatePostTure" parameterType="com.jk.entity.Post" >
+		update post
+        SET
+		title = #{post.title,jdbcType=LONGVARCHAR},
+        content = #{post.content,jdbcType=LONGVARCHAR},
+        category_id = #{post.category_id,jdbcType=VARCHAR}
+		where id = #{post.id,jdbcType=VARCHAR}
+	</update>
+
+
+	<insert id="insertPostTure" parameterType="com.jk.entity.Post" >
+		insert into post (id, edit_mode, category_id,
+		user_id, user_ip, vote_up,
+		vote_down, price, pay_point,
+		comment_status, comment_count, comment_time,
+		view_count, recommend, level,
+		status, created, modified,
+		title, content, user_agent
+		)
+		values (#{id,jdbcType=VARCHAR}, #{edit_mode,jdbcType=VARCHAR}, #{category_id,jdbcType=VARCHAR},
+		#{user_id,jdbcType=VARCHAR}, #{user_ip,jdbcType=VARCHAR}, #{vote_up,jdbcType=INTEGER},
+		#{vote_down,jdbcType=INTEGER}, #{price,jdbcType=DECIMAL}, #{pay_point,jdbcType=INTEGER},
+		#{comment_status,jdbcType=VARCHAR}, #{comment_count,jdbcType=INTEGER}, #{comment_time,jdbcType=TIMESTAMP},
+		#{view_count,jdbcType=INTEGER}, #{recommend,jdbcType=BIT}, #{level,jdbcType=TINYINT},
+		#{status,jdbcType=TINYINT}, #{created,jdbcType=TIMESTAMP}, #{modified,jdbcType=TIMESTAMP},
+		#{title,jdbcType=LONGVARCHAR}, #{content,jdbcType=LONGVARCHAR}, #{user_agent,jdbcType=LONGVARCHAR}
+		)
+	</insert>
+
+
+
+    <select id="judgeToAdopt" resultType="com.jk.entity.Post">
+      SELECT status FROM post where id = #{postid}
+    </select>
+
+
+    <update id="updatePostAdopt" parameterType="java.lang.String" >
+        update post
+        SET
+        status = 9
+        WHERE id = #{postid}
+    </update>
+
+    <update id="updateCommentAdopt" parameterType="java.lang.String" >
+        update comment
+        SET
+        status = 9
+        WHERE id = #{commentid}
+    </update>
+
+
+    <select id="userCollectionCollection" resultType="com.jk.entity.UserCollection">
+        SELECT * FROM user_collection
+        WHERE
+        user_id = #{1}
+        AND
+        post_id = #{0}
+    </select>
+
+    <insert id="insertCollection" parameterType="com.jk.entity.UserCollection" >
+        insert into user_collection (id, user_id, post_id,
+        post_user_id, created, modified,
+        post_title, post_content)
+        values (#{id,jdbcType=VARCHAR}, #{user_id,jdbcType=VARCHAR}, #{post_id,jdbcType=VARCHAR},
+        #{post_user_id,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, #{modified,jdbcType=TIMESTAMP},
+        #{post_title,jdbcType=LONGVARCHAR}, #{post_content,jdbcType=LONGVARCHAR})
+    </insert>
+
+    <delete id="deleteCollection">
+        delete from user_collection
+        where user_id = #{1}
+        AND post_id = #{0}
+    </delete>
+
+    <delete id="deleteCollectionPost" parameterType="java.lang.String" >
+        delete from post
+        where id = #{postid,jdbcType=VARCHAR}
+    </delete>
+
+    <delete id="deleteCollectionComment" parameterType="java.lang.String" >
+        delete from comment
+        where post_id = #{postid,jdbcType=VARCHAR}
+    </delete>
+
+
+    <update id="updatePost">
+        update post
+        SET
+        level = #{1,jdbcType=TINYINT}
+        where id = #{0,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updatePostTop">
+        update post
+        SET
+        level = 0
+        where id = #{0,jdbcType=VARCHAR}
+    </update>
+
+
+    <update id="updatePostEssence">
+        update post
+        SET
+        recommend = 1
+        where id = #{postid,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updatePostCancelEssence">
+        update post
+        SET
+        recommend = 0
+        where id = #{postid,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertUserAction" parameterType="com.jk.entity.UserAction" >
+		insert into user_action (id, user_id, action,
+		point, post_id, comment_id,
+		created, modified)
+		values (#{id,jdbcType=VARCHAR}, #{user_id,jdbcType=VARCHAR}, #{action,jdbcType=VARCHAR},
+		#{point,jdbcType=INTEGER}, #{post_id,jdbcType=VARCHAR}, #{comment_id,jdbcType=VARCHAR},
+		#{created,jdbcType=TIMESTAMP}, #{modified,jdbcType=TIMESTAMP})
+	</insert>
+
+	<select id="userPost" resultType="com.jk.entity.Post" parameterType="java.lang.String">
+		SELECT * FROM post WHERE user_id = #{userid} ORDER BY created DESC LIMIT 0,5
+	</select>
+
+	<select id="userAction" resultType="com.jk.entity.UserAction" parameterType="java.lang.String">
+		(SELECT
+		ua.id,ua.action,ua.created,ua.point,ps.id as 'ps.id',ps.title AS 'ps.title',cm.content as 'cm.content' FROM user_action as ua,post as ps,comment cm
+		WHERE
+		ua.post_id = ps.id AND ua.comment_id = cm.id
+		AND ua.user_id = #{userid})
+		UNION ALL
+		(SELECT
+		ua.id,ua.action,ua.created,ua.point,ps.id as 'ps.id',ps.title as 'ps.title',NULL AS 'cm.content' FROM user_action as ua,post as ps
+		WHERE
+		ua.post_id = ps.id AND ua.comment_id IS NULL
+		AND ua.user_id = #{userid})
+		UNION ALL
+		(SELECT
+		ua.id,ua.action,ua.created,ua.point,NULL as 'ps.id',NULL as 'ps.title',NULL AS 'cm.content' FROM user_action as ua
+		WHERE ua.action = 'sign_in'
+		AND ua.user_id = #{userid})
+		ORDER BY created DESC
+		LIMIT 0,5
+	</select>
+
+    <update id="updateDoSetting" parameterType="com.jk.entity.User" >
+        update user
+        set
+        nickname = #{nickname,jdbcType=VARCHAR},
+        gender = #{gender,jdbcType=VARCHAR},
+        address = #{address,jdbcType=VARCHAR},
+        weibo = #{weibo,jdbcType=VARCHAR},
+        signature = #{signature,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateUserImg">
+        update user
+        set
+        avatar = #{1,jdbcType=VARCHAR}
+        where id = #{0,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateUserPassword">
+        update user
+        set
+        password = #{1,jdbcType=VARCHAR}
+        where id = #{0,jdbcType=VARCHAR}
+    </update>
+
+    <select id="personalPost" resultType="com.jk.entity.Post" parameterType="java.lang.String">
+        SELECT * FROM post WHERE user_id = #{userid} ORDER BY created DESC
+    </select>
+
+    <select id="collectionPost" resultType="com.jk.entity.UserCollection" parameterType="java.lang.String">
+        SELECT * FROM user_collection WHERE user_id = #{userid} ORDER BY created DESC
+    </select>
+
+	<select id="personalInformation" resultType="com.jk.entity.UserMessage" parameterType="java.lang.String">
+		SELECT
+		um.id,um.created,us.id AS 'us.id',us.nickname AS 'us.nickname',ps.id AS 'ps.id',ps.title AS 'ps.title'
+		FROM user_message AS um,user AS us,post AS ps
+		WHERE
+		um.from_user_id = us.id AND
+		um.post_id = ps.id AND
+		um.to_user_id = #{id}
+		ORDER BY um.created DESC
+	</select>
+
+
+	<insert id="insertUserMessage" parameterType="com.jk.entity.UserMessage" >
+		insert into user_message (id, from_user_id, to_user_id,
+		post_id, comment_id, action,
+		type, created, modified,
+		content)
+		values (#{id,jdbcType=VARCHAR}, #{from_user_id,jdbcType=VARCHAR}, #{to_user_id,jdbcType=VARCHAR},
+		#{post_id,jdbcType=VARCHAR}, #{comment_id,jdbcType=VARCHAR}, #{action,jdbcType=VARCHAR},
+		#{type,jdbcType=TINYINT}, #{created,jdbcType=TIMESTAMP}, #{modified,jdbcType=TIMESTAMP},
+		#{content,jdbcType=LONGVARCHAR})
+	</insert>
+
+
+
+	<delete id="deleteMessage" parameterType="java.lang.String" >
+		delete from user_message
+		where id = #{messageId,jdbcType=VARCHAR}
+	</delete>
+
+	<delete id="deleteAllMessage" parameterType="java.lang.String" >
+		delete from user_message
+		where to_user_id = #{id,jdbcType=VARCHAR}
+	</delete>
+
+	<select id="certification" resultType="com.jk.entity.UserAction" parameterType="java.lang.String">
+		SELECT *
+		FROM user_action as ua
+		WHERE
+		to_days(ua.created) = to_days(now()) AND
+		ua.action = 'sign_in' AND
+		ua.user_id = #{id,jdbcType=VARCHAR}
+		LIMIT 0,1
+	</select>
+
+    <insert id="insertCertification" parameterType="com.jk.entity.UserAction" >
+        insert into user_action (id, user_id, action,
+        point, post_id, comment_id,
+        created, modified)
+        values (#{id,jdbcType=VARCHAR}, #{user_id,jdbcType=VARCHAR}, #{action,jdbcType=VARCHAR},
+        #{point,jdbcType=INTEGER}, #{post_id,jdbcType=VARCHAR}, #{comment_id,jdbcType=VARCHAR},
+        #{created,jdbcType=TIMESTAMP}, #{modified,jdbcType=TIMESTAMP})
+    </insert>
+
+    <update id="updateIntegral">
+        update user
+        set
+        point = point+#{1,jdbcType=INTEGER}
+        where id = #{0,jdbcType=VARCHAR}
+    </update>
+
+	<insert id="insertUserOnline" parameterType="com.jk.entity.UserOnline" >
+		insert into user_online (id, userId, userName,
+		host, systemHost, userAgent,
+		status, startTimestamp, lastAccessTime,
+		timeout, onlineSession, browser
+		)
+		values (#{id,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR},
+		#{host,jdbcType=VARCHAR}, #{systemHost,jdbcType=VARCHAR}, #{userAgent,jdbcType=VARCHAR},
+		#{status,jdbcType=VARCHAR}, #{startTimestamp,jdbcType=TIMESTAMP}, #{lastAccessTime,jdbcType=TIMESTAMP},
+		#{timeout,jdbcType=INTEGER}, #{onlineSession,jdbcType=VARCHAR}, #{browser,jdbcType=VARCHAR}
+		)
+	</insert>
+
+</mapper>   

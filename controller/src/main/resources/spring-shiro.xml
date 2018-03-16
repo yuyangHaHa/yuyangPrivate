@@ -1,0 +1,152 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+			http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans.xsd"
+       default-lazy-init="false">
+
+
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <!-- 调用我们配置的权限管理器 -->
+        <property name="securityManager" ref="securityManager"/>
+        <!-- 配置我们的登录请求地址 -->
+        <property name="loginUrl" value="/logintz"/>
+        <!--<property name="successUrl" value="/"/>-->
+        <!--
+        如果您请求的资源不再您的权限范围，则跳转到/403请求地址,只对shiroFilter的有效，其他权限，角色，需要
+        异常处理解析器
+         -->
+        <property name="unauthorizedUrl" value="/error"/>
+        <!-- 自定义过滤器 -->
+        <property name="filters">
+            <map>
+                <entry key="rememberMe">
+                    <bean class="com.jk.shiro.RememberMeFilter"></bean>
+                </entry>
+                <entry key="specialRememberMe">
+                    <bean class="com.jk.shiro.SpecialRememberMe"></bean>
+                </entry>
+                <entry key="forceLogout">
+                    <bean class="com.jk.shiro.ForceLogoutFilter"></bean>
+                </entry>
+                <entry key="diyTwo">
+                    <bean class="com.jk.shiroDiy.twoDiy"></bean>
+                </entry>
+                <entry key="diy">
+                    <bean class="com.jk.shiroDiy.oneDiy"></bean>
+                </entry>
+                <entry key="teshu">
+                    <bean class="com.jk.shiroDiy.teshu"></bean>
+                </entry>
+                <entry key="teshuTwo">
+                    <bean class="com.jk.shiroDiy.teshuTwo"></bean>
+                </entry>
+                <entry key="roleTeShu">
+                    <bean class="com.jk.shiroDiy.CustomRolesAuthorizationFilter"></bean>
+                </entry>
+            </map>
+        </property>
+        <!--过滤定义，从上而下:过滤条件越严格排序越靠上-->
+        <property name="filterChainDefinitions">
+            <value>
+
+
+                /roleTeShu = roles["yy,yu,yang"]
+
+                /teshu = teshuTwo
+                /diy = diy,diyTwo
+
+                /role/** = forceLogout,rememberMe,user
+                / = forceLogout,specialRememberMe
+                /** = forceLogout,specialRememberMe,anon
+
+
+            </value>
+        </property>
+    </bean>
+
+    <!-- 安全管理器 -->
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="realm" ref="userRealm"/>
+        <property name="sessionManager" ref="sessionManager" />
+        <property name="cacheManager" ref="cacheManager" />
+        <property name="rememberMeManager" ref="rememberMeManager"/>
+    </bean>
+
+
+
+
+
+    <!-- Shiro生命周期处理器 -->
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+
+
+
+    <!-- Realm实现 -->
+    <bean id="userRealm" class="com.jk.shiro.UserRealm"></bean>
+    <!-- 获取session的sessionDAO -->
+    <bean id="sessionDAO" class="org.apache.shiro.session.mgt.eis.MemorySessionDAO"/>
+    <!-- 管理session和会话 -->
+    <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+        <property name="sessionDAO" ref="sessionDAO"/>
+        <property name="sessionIdCookie" ref="sessionIdCookie"/>
+
+            <!-- session 有效时间为1min （毫秒单位）-->
+            <property name="globalSessionTimeout" value="1800000"/>
+            <!-- 相隔多久检查一次session的有效性 1min  会话验证时间间隔-->
+            <property name="sessionValidationInterval" value="1800000"/>
+            <!-- 间隔多少时间检查，不配置是60分钟 会话验证调度器 -->
+            <property name="sessionValidationScheduler" ref="sessionValidationScheduler"/>
+            <!-- 是否开启 检测，默认开启 -->
+            <property name="sessionValidationSchedulerEnabled" value="true"/>
+            <!-- 是否删除无效的，默认也是开启 -->
+            <property name="deleteInvalidSessions" value="true"/>
+    </bean>
+    <!-- 缓存管理器 -->
+    <bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+        <property name="cacheManagerConfigFile" value="classpath:ehcache.xml"/>
+    </bean>
+
+    <!-- 会话Cookie模板 -->
+    <bean id="sessionIdCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+        <constructor-arg value="sid"/>
+        <property name="httpOnly" value="true"/>
+        <property name="maxAge" value="-1"/>
+    </bean>
+    <bean id="rememberMeCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+        <constructor-arg value="rememberMe"/>
+        <property name="httpOnly" value="true"/>
+        <property name="maxAge" value="2592000"/><!-- 30天 -->
+    </bean>
+    <!-- rememberMe管理器 -->
+    <bean id="rememberMeManager" class="org.apache.shiro.web.mgt.CookieRememberMeManager">
+        <property name="cipherKey" value="#{T(org.apache.shiro.codec.Base64).decode('4AvVhmFLUs0KTA3Kprsdag==')}"/>
+        <property name="cookie" ref="rememberMeCookie"/>
+    </bean>
+    <!--rememberMeParam，即rememberMe请求参数名，请求参数是boolean类型，true表示rememberMe。-->
+    <bean id="formAuthenticationFilter" class="org.apache.shiro.web.filter.authc.FormAuthenticationFilter">
+        <property name="rememberMeParam" value="rememberMe"/>
+    </bean>
+    <!--
+    会话Session ID生成器
+    shiro有自己的sesison概念，shiro的session并不是java ee的session。
+    通常，我们看到shiro的sessionId格式类似c6395bbc-425d-43b3-a444-04fee5a92e95，
+    是因为shiro产生sesisonId是通过UUID生成的。
+    我们可以看到shiro-core-xx.jar的org.apache.shiro.session.mgt.eis包下有个JavaUuidSessionIdGenerator，
+    shiro的sessionId默认是通过该类生成的。
+    -->
+    <bean id="sessionIdGenerator" class="org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator"/>
+    <!--
+    shiro提供了会话验证调度器，用于定期的验证会话是否已过期，
+    如果过期将停止会话；出于性能考虑，一般情况下都是获取会话时来验证会话是否过期并停止会话的；
+    但是如在web环境中，如果用户不主动退出是不知道会话是否过期的，因此需要定期的检测会话是否过期，
+    Shiro提供了会话验证调度器SessionValidationScheduler。
+     -->
+    <bean id="sessionValidationScheduler" class="org.apache.shiro.session.mgt.ExecutorServiceSessionValidationScheduler">
+        <!-- 间隔多少时间检查，不配置是60分钟 15min -->
+        <property name="interval" value="1800000"/>
+        <property name="sessionManager" ref="sessionManager"/>
+    </bean>
+
+</beans>

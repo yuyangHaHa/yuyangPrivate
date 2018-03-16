@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
+    <!--
+    φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪
+    φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪
+    φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪
+    φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪
+    φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪
+    φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪
+    φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪
+    φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪
+    φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪
+    φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪
+    φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪
+    φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪
+    φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪
+    φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪
+    φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪
+    φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪
+    φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪
+    φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪φ(≧ω≦*)♪
+    -->
+    <!-- 项目名 -->
+    <display-name>hanjiazuoyeyuyang</display-name>
+
+
+    <!-- 配置springmvc前端控制器（就是一个servlet） -->
+    <servlet>
+        <servlet-name>springmvc</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <!-- 加载配置文件（spring-mvc.xml） -->
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>
+                classpath:spring-mvc.xml
+            </param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>springmvc</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
+    <!-- 字符集过滤，解决中文乱码 -->
+    <filter>
+        <filter-name>encodingFilter</filter-name>
+        <filter-class>
+            org.springframework.web.filter.CharacterEncodingFilter
+        </filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+        <init-param>
+            <param-name>forceEncoding</param-name>
+            <param-value>false</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>encodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <!-- 配置spring监听 -->
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+    <!-- 加载核心配置文件 -->
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>
+            classpath:applicationContext.xml,
+            classpath:spring-mybatis.xml,
+            classpath:spring-shiro.xml
+        </param-value>
+    </context-param>
+
+    <!-- shiro过滤器 -->
+    <!-- shiro过虑器，DelegatingFilterProx会从spring容器中找shiroFilter代理模式（律师模式） -->
+    <filter>
+        <filter-name>shiroFilter</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+          <!--
+            DelegatingFilterProxy的功能是通知Spring将所有的Filter交给ShiroFilter管理。
+            如果要保留Filter原有的init，destroy方法的调用，
+            还需要配置初始化参数targetFilterLifecycle为true，
+            而且servlet容器控制filter声明周期；该参数默认为false，
+            servlet容器生命周期调用不会传播到 DelegatingFilterProxy,
+            无filter的init，destroy方法。
+            为false的后果，无init，destroy方法，servlet容器也不会控制生命周期，
+            session也就有的方法为空，比如获取根路径失败！！
+            -->
+        <init-param>
+            <param-name>targetFilterLifecycle</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>shiroFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <!-- 配置log4j监听 -->
+    <listener>
+        <listener-class>
+            org.springframework.web.util.Log4jConfigListener
+        </listener-class>
+    </listener>
+    <!-- 加载log4j配置文件 -->
+    <context-param>
+        <param-name>log4jConfigLocation</param-name>
+        <param-value>classpath:log4j.properties</param-value>
+    </context-param>
+    <!-- 定义扫描文件的时间 -->
+    <context-param>
+        <param-name>log4jRefreshInterval</param-name>
+        <param-value>3000</param-value>
+    </context-param>
+
+    <!-- 验证码 -->
+    <servlet>
+        <servlet-name>AuthImage</servlet-name>
+        <servlet-class>com.jk.util.AuthImage</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AuthImage</servlet-name>
+        <url-pattern>/authImage</url-pattern>
+    </servlet-mapping>
+
+
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+        <welcome-file>index.htm</welcome-file>
+        <welcome-file>index.jsp</welcome-file>
+        <welcome-file>default.html</welcome-file>
+        <welcome-file>default.htm</welcome-file>
+        <welcome-file>default.jsp</welcome-file>
+    </welcome-file-list>
+</web-app>
