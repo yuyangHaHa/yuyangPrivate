@@ -1,0 +1,9 @@
+#阻止.idea路径
+.idea
+#阻止.idea路径及下面文件
+.idea/*
+#阻止*.iml文件
+*.iml
+#阻止target路径
+target/
+target/*
